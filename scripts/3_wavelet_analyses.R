@@ -131,14 +131,6 @@ thermal_conditions<-read.csv('./data/thermal_predictors_updated.csv') # this is 
 # Summarized algal data -- from algal_data_processing.R
 biol_predictors<-read.csv('./data/summarized/MCR_alg_summarized.csv')
 
-# Coordinates of each LTER site
-mra_site_cords<-read.csv("./data/LTER_sites.csv")
-mra_sites<-mra_site_cords %>% filter(Type == "survey", !Habitat == "Outer")
-
-
-# Ocean distance between monitoring sites
-ocean_dist<-read.csv('./data/ocean_dist_sites.csv')
-
 
 # Environmental data curation ####
 coral_years<-unique(MCR_coral_data$Date) # 2005-2007 temperature data are missing for the fringing reef. Using 2008 onward
@@ -276,14 +268,7 @@ poc_ts_plot<-poc_ts_plot_df %>%
   theme_bw() +
   xlim(c(2005,2024))
 
-# Adjacency matrix for pairwise synchrony comparisons
-poc_mra_coords<-mra_sites %>%
-  dplyr::mutate(Habitat = ifelse(Habitat == "BR", "Backreef", Habitat)) %>%
-  dplyr::mutate(site_hab = paste0(Site,"_",Habitat)) %>%
-  dplyr::filter(site_hab %in% row.names(poc_df_clean$cdat)) %>%
-  dplyr::arrange(match(site_hab, row.names(poc_df_clean$cdat))) %>%
-  dplyr::select(Lat,Long) %>%
-  dplyr::rename("X" = "Long", "Y" = "Lat")
+
 
 
 poc_wmf_plotdat_df<-extract_plotmag_wmf_data(poc_fres_wmf) # extract using helper function
@@ -513,18 +498,6 @@ por_ts_plot<-por_ts_plot_df %>%
   ylim(c(-4,4))
 
 
-
-# Adjacency matrix for pairwise synchrony comparisons
-por_mra_coords<-mra_sites %>%
-  dplyr::mutate(Habitat = ifelse(Habitat == "BR", "Backreef", Habitat)) %>%
-  dplyr::mutate(site_hab = paste0(Site,"_",Habitat)) %>%
-  dplyr::filter(site_hab %in% row.names(por_df_clean$cdat)) %>%
-  arrange(match(site_hab, row.names(por_df_clean$cdat))) %>%
-  mutate(row.names(.) == site_hab) %>%
-  dplyr::select(Lat,Long) %>%
-  dplyr::rename("X" = "Long", "Y" = "Lat")
-
-
 ### Wavelet plotting ####
 por_wmf_plotdat_df <- extract_plotmag_wmf_data(por_fres_wmf)
 por_wmf_pretty_TS <- pretty(por_wmf_plotdat_df$Timescale, n = 8)
@@ -727,15 +700,6 @@ mont_ts_plot<-Mont_ts_plot_df %>%
   geom_line() +
   theme_bw() +
   xlim(c(2005,2024))
-
-
-mont_mra_coords<-mra_sites %>%
-  dplyr::mutate(Habitat = ifelse(Habitat == "BR", "Backreef", Habitat)) %>%
-  dplyr::mutate(site_hab = paste0(Site,"_",Habitat)) %>%
-  dplyr::filter(site_hab %in% row.names(mont_df_clean$cdat)) %>%
-  arrange(match(site_hab, row.names(mont_df_clean$cdat))) %>%
-  dplyr::select(Lat,Long) %>%
-  dplyr::rename("X" = "Long", "Y" = "Lat")
 
 
 
@@ -945,17 +909,6 @@ acro_ts_plot<-acro_ts_plot_df %>%
   geom_line() +
   theme_bw() +
   xlim(c(2005,2024))
-
-
-
-# Adjacency matrix for pairwise synchrony comparisons
-acro_mra_coords<-mra_sites %>%
-  dplyr::mutate(Habitat = ifelse(Habitat == "BR", "Backreef", Habitat)) %>%
-  dplyr::mutate(site_hab = paste0(Site,"_",Habitat)) %>%
-  dplyr::filter(site_hab %in% row.names(acro_df_clean$cdat)) %>%
-  arrange(match(site_hab, row.names(acro_df_clean$cdat))) %>%
-  dplyr::select(Lat,Long) %>%
-  dplyr::rename("X" = "Long", "Y" = "Lat")
 
 
 ### Wavelet plotting ####
@@ -1580,168 +1533,80 @@ bands <- list(
 )
 
 
-## POC CLUSTERS ####
+## POC Synmats ####
 clustmethod = "ReXWT.sig.fft"
 #clustmethod = "ReXWT.sig.aaft"
 f0_set = 0.5
 
 # short = 2-5y
-poc_all_clust_short<-clust(poc_df_short_clean$cdat,env_years,poc_mra_coords,
+poc_all_clust_short<-synmat(poc_df_short_clean$cdat,env_years,
                            method = clustmethod, nsurrogs = 1000,weighted = T,
                            tsrange = short,
                            f0 = f0_set)
 # medium = 5-10y
-poc_all_clust_medium<-clust(poc_df_short_clean$cdat,env_years,poc_mra_coords,
+poc_all_clust_medium<-synmat(poc_df_short_clean$cdat,env_years,
                             method = clustmethod, nsurrogs = 1000,weighted = T,
                             tsrange = medium,
                             f0 = f0_set)
+
 # long = 2-10y --- changed 16OCT25 2-10y
-poc_all_clust_long<-clust(poc_df_short_clean$cdat,env_years,poc_mra_coords,
+poc_all_clust_long<-synmat(poc_df_short_clean$cdat,env_years,
                           method = clustmethod, nsurrogs = 1000,weighted = T,
                           tsrange = long,
                           f0 = f0_set)
 
-## POR CLUSTERS ####
+## POR Synmats ####
 #clustmethod = "ReXWT.sig.fft"
-por_all_clust_short<-clust(por_df_short_clean$cdat,env_years,por_mra_coords,
+por_all_clust_short<-synmat(por_df_short_clean$cdat,env_years,
                            method = clustmethod, nsurrogs = 1000,weighted = T,
                            tsrange = short,
                            f0 = f0_set)
 
-por_all_clust_medium<-clust(por_df_short_clean$cdat,env_years,poc_mra_coords,
+por_all_clust_medium<-synmat(por_df_short_clean$cdat,env_years,
                             method = clustmethod, nsurrogs = 1000,weighted = T,
                             tsrange = medium,
                             f0 = f0_set)
 
-por_all_clust_long<-clust(por_df_short_clean$cdat,env_years,por_mra_coords,
+por_all_clust_long<-synmat(por_df_short_clean$cdat,env_years,
                           method = clustmethod, nsurrogs = 1000,weighted = T,
                           tsrange = long,
                           f0 = f0_set)
 
-## MONT CLUSTERS ####
+## MONT Synmats ####
 #clustmethod = "ReXWT.sig.fft"
-mont_all_clust_short<-clust(mont_df_short_clean$cdat,env_years,mont_mra_coords,
+mont_all_clust_short<-synmat(mont_df_short_clean$cdat,env_years,
                             method = clustmethod, nsurrogs = 1000,weighted = T,
                             tsrange = short,
                             f0 = f0_set)
 
-mont_all_clust_medium<-clust(mont_df_short_clean$cdat,env_years,mont_mra_coords,
+mont_all_clust_medium<-synmat(mont_df_short_clean$cdat,env_years,
                              method = clustmethod, nsurrogs = 1000,weighted = T,
                              tsrange = medium,
                              f0 = f0_set)
 
-mont_all_clust_long<-clust(mont_df_short_clean$cdat,env_years,mont_mra_coords,
+mont_all_clust_long<-synmat(mont_df_short_clean$cdat,env_years,
                            method = clustmethod, nsurrogs = 1000,weighted = T,
                            tsrange = long,
                            f0 = f0_set)
 
 
-# ACRO CLUSTERS ####
+# ACRO Synmats ####
 #clustmethod = "ReXWT.sig.fft"
-acro_mra_coords<-mra_sites %>%
-  dplyr::mutate(Habitat = ifelse(Habitat == "BR", "Backreef", Habitat)) %>%
-  dplyr::mutate(site_hab = paste0(Site,"_",Habitat)) %>%
-  dplyr::filter(site_hab %in% row.names(acro_df_short_clean$cdat)) %>%
-  arrange(match(site_hab, row.names(acro_df_short_clean$cdat))) %>%
-  dplyr::select(Lat,Long) %>%
-  dplyr::rename("X" = "Long", "Y" = "Lat")
 
-acro_all_clust_short<-clust(acro_df_short_clean$cdat,env_years,acro_mra_coords,
+acro_all_clust_short<-synmat(acro_df_short_clean$cdat,env_years,
                             method = clustmethod, nsurrogs = 1000,weighted = T,
                             tsrange = short,
                             f0 = f0_set)
 
-acro_all_clust_medium<-clust(acro_df_short_clean$cdat,env_years,acro_mra_coords,
+acro_all_clust_medium<-synmat(acro_df_short_clean$cdat,env_years,
                              method = clustmethod, nsurrogs = 1000,weighted = T,
                              tsrange = medium,
                              f0 = f0_set)
 
-acro_all_clust_long<-clust(acro_df_short_clean$cdat,env_years,acro_mra_coords,
+acro_all_clust_long<-synmat(acro_df_short_clean$cdat,env_years,
                            method = clustmethod, nsurrogs = 1000,weighted = T,
                            tsrange = long,
                            f0 = f0_set)
-
-
-# Environmental clusters ####
-## DTR CLUSTERS ####
-#clustmethod = "ReXWT.sig.fft"
-dtr_mra_coords<-mra_sites %>%
-  dplyr::mutate(Habitat = ifelse(Habitat == "BR", "Backreef", Habitat)) %>%
-  dplyr::mutate(site_hab = paste0(Site,"_",Habitat)) %>%
-  dplyr::filter(site_hab %in% row.names(dtr_clean$cdat)) %>%
-  arrange(match(site_hab, row.names(dtr_clean$cdat))) %>%
-  dplyr::select(Lat,Long) %>%
-  dplyr::rename("X" = "Long", "Y" = "Lat")
-
-dtr_clust_short<-clust(dtr_clean$cdat,env_years,dtr_mra_coords,
-                       method = clustmethod, nsurrogs = 1000,weighted = T,
-                       tsrange = short,
-                       f0 = f0_set)
-
-dtr_clust_medium<-clust(dtr_clean$cdat,env_years,dtr_mra_coords,
-                        method = clustmethod, nsurrogs = 1000,weighted = T,
-                        tsrange = medium,
-                        f0 = f0_set)
-
-dtr_clust_long<-clust(dtr_clean$cdat,env_years,dtr_mra_coords,
-                      method = clustmethod, nsurrogs = 1000,weighted = T,
-                      tsrange = long,
-                      f0 = f0_set)
-
-
-
-## DHD ####
-#clustmethod = "ReXWT.sig.fft"
-DHD_mra_coords<-mra_sites %>%
-  dplyr::mutate(Habitat = ifelse(Habitat == "BR", "Backreef", Habitat)) %>%
-  dplyr::mutate(site_hab = paste0(Site,"_",Habitat)) %>%
-  dplyr::filter(site_hab %in% row.names(DHD_clean$cdat)) %>%
-  arrange(match(site_hab, row.names(DHD_clean$cdat))) %>%
-  dplyr::select(Lat,Long) %>%
-  dplyr::rename("X" = "Long", "Y" = "Lat")
-
-DHD_clust_short<-clust(DHD_clean$cdat,env_years,DHD_mra_coords,
-                       method = clustmethod, nsurrogs = 1000,weighted = T,
-                       tsrange = short,
-                       f0 = f0_set)
-
-DHD_clust_medium<-clust(DHD_clean$cdat,env_years,DHD_mra_coords,
-                        method = clustmethod, nsurrogs = 1000,weighted = T,
-                        tsrange = medium,
-                        f0 = f0_set)
-
-DHD_clust_long<-clust(DHD_clean$cdat,env_years,DHD_mra_coords,
-                      method = clustmethod, nsurrogs = 1000,weighted = T,
-                      tsrange = long,
-                      f0 = f0_set)
-
-
-
-
-## Algal cover ####
-#clustmethod = "ReXWT.sig.fft"
-alg_mra_coords<-mra_sites %>%
-  dplyr::mutate(Habitat = ifelse(Habitat == "BR", "Backreef", Habitat)) %>%
-  dplyr::mutate(site_hab = paste0(Site,"_",Habitat)) %>%
-  dplyr::filter(site_hab %in% row.names(alg_clean$cdat)) %>%
-  arrange(match(site_hab, row.names(alg_clean$cdat))) %>%
-  dplyr::select(Lat,Long) %>%
-  dplyr::rename("X" = "Long", "Y" = "Lat")
-
-alg_clust_short<-clust(alg_clean$cdat,env_years,alg_mra_coords,
-                       method = clustmethod, nsurrogs = 1000,weighted = T,
-                       tsrange = short,
-                       f0 = f0_set)
-
-alg_clust_medium<-clust(alg_clean$cdat,env_years,alg_mra_coords,
-                        method = clustmethod, nsurrogs = 1000,weighted = T,
-                        tsrange = medium,
-                        f0 = f0_set)
-
-alg_clust_long<-clust(alg_clean$cdat,env_years,alg_mra_coords,
-                      method = clustmethod, nsurrogs = 1000,weighted = T,
-                      tsrange = long,
-                      f0 = f0_set)
 
 
 

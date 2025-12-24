@@ -9,49 +9,49 @@ library(MuMIn)
 
 # Environmental variables #####
 ## DTR ####
-DTR_clust_short<-clust(dtr_clean$cdat,env_years,poc_mra_coords,
+DTR_clust_short<-synmat(dtr_clean$cdat,env_years,
                        method = clustmethod, nsurrogs = 1000,weighted = T,
                        tsrange = short,
                        f0 = f0_set)
 
-DTR_clust_medium<-clust(dtr_clean$cdat,env_years,poc_mra_coords,
+DTR_clust_medium<-synmat(dtr_clean$cdat,env_years,
                         method = clustmethod, nsurrogs = 1000,weighted = T,
                         tsrange = medium,
                         f0 = f0_set)
 
-DTR_clust_long<-clust(dtr_clean$cdat,env_years,poc_mra_coords,
+DTR_clust_long<-synmat(dtr_clean$cdat,env_years,
                       method = clustmethod, nsurrogs = 1000,weighted = T,
                       tsrange = long,
                       f0 = f0_set)
 
 ## DHD ####
-DHD_clust_short<-clust(DHD_clean$cdat,env_years,poc_mra_coords,
+DHD_clust_short<-synmat(DHD_clean$cdat,env_years,
                        method = clustmethod, nsurrogs = 1000,weighted = T,
                        tsrange = short,
                        f0 = f0_set)
 
-DHD_clust_medium<-clust(DHD_clean$cdat,env_years,poc_mra_coords,
+DHD_clust_medium<-synmat(DHD_clean$cdat,env_years,
                         method = clustmethod, nsurrogs = 1000,weighted = T,
                         tsrange = medium,
                         f0 = f0_set)
 
-DHD_clust_long<-clust(DHD_clean$cdat,env_years,poc_mra_coords,
+DHD_clust_long<-synmat(DHD_clean$cdat,env_years,
                       method = clustmethod, nsurrogs = 1000,weighted = T,
                       tsrange = long,
                       f0 = f0_set)
 
 ## Alg ####
-alg_clust_short<-clust(alg_clean$cdat,env_years,poc_mra_coords,
+alg_clust_short<-synmat(alg_clean$cdat,env_years,
                        method = clustmethod, nsurrogs = 1000,weighted = T,
                        tsrange = short,
                        f0 = f0_set)
 
-alg_clust_medium<-clust(alg_clean$cdat,env_years,poc_mra_coords,
+alg_clust_medium<-synmat(alg_clean$cdat,env_years,
                         method = clustmethod, nsurrogs = 1000,weighted = T,
                         tsrange = medium,
                         f0 = f0_set)
 
-alg_clust_long<-clust(alg_clean$cdat,env_years,poc_mra_coords,
+alg_clust_long<-synmat(alg_clean$cdat,env_years,
                       method = clustmethod, nsurrogs = 1000,weighted = T,
                       tsrange = long,
                       f0 = f0_set)
@@ -62,8 +62,12 @@ alg_clust_long<-clust(alg_clean$cdat,env_years,poc_mra_coords,
 
 ## Flatten ####
 ### DTR ####
-DTR_short_sync_mat <- as.matrix(DTR_clust_short$adj)
-DTR_site_names <- rownames(DTR_clust_short$dat)
+#DTR_short_sync_mat <- as.matrix(DTR_clust_short$adj)
+#DTR_site_names <- rownames(DTR_clust_short$dat)
+
+DTR_short_sync_mat <- as.matrix(DTR_clust_short) # synmat
+DTR_site_names <- row.names(dtr_clean$cdat) #synmat
+
 rownames(DTR_short_sync_mat) <- DTR_site_names
 colnames(DTR_short_sync_mat) <- DTR_site_names
 
@@ -77,8 +81,12 @@ DTR_clust_short_df <- data.frame(
 )
 
 
-DTR_medium_sync_mat <- as.matrix(DTR_clust_medium$adj)
-DTR_site_names <- rownames(DTR_clust_medium$dat)
+#DTR_medium_sync_mat <- as.matrix(DTR_clust_medium$adj)
+#DTR_site_names <- rownames(DTR_clust_medium$dat)
+
+DTR_medium_sync_mat <- as.matrix(DTR_clust_medium) # synmat
+DTR_site_names <- row.names(dtr_clean$cdat) #synmat
+
 rownames(DTR_medium_sync_mat) <- DTR_site_names
 colnames(DTR_medium_sync_mat) <- DTR_site_names
 
@@ -92,8 +100,12 @@ DTR_clust_medium_df <- data.frame(
 )
 
 
-DTR_long_sync_mat <- as.matrix(DTR_clust_long$adj)
-DTR_site_names <- rownames(DTR_clust_long$dat)
+#DTR_long_sync_mat <- as.matrix(DTR_clust_long$adj)
+#DTR_site_names <- rownames(DTR_clust_long$dat)
+
+DTR_long_sync_mat <- as.matrix(DTR_clust_long) # synmat
+DTR_site_names <- row.names(dtr_clean$cdat) #synmat
+
 rownames(DTR_long_sync_mat) <- DTR_site_names
 colnames(DTR_long_sync_mat) <- DTR_site_names
 
@@ -122,8 +134,12 @@ DTR_clust_long_df <- sort_sites(DTR_clust_long_df)
 DTR_mats<-rbind(DTR_clust_long_df,DTR_clust_medium_df,DTR_clust_short_df)
 
 ### DHD ####
-DHD_short_sync_mat <- as.matrix(DHD_clust_short$adj)
-DHD_site_names <- rownames(DHD_clust_short$dat)
+#DHD_short_sync_mat <- as.matrix(DHD_clust_short$adj)
+#DHD_site_names <- rownames(DHD_clust_short$dat)
+
+DHD_short_sync_mat <- as.matrix(DHD_clust_short) # synmat
+DHD_site_names <- row.names(DHD_clean$cdat) #synmat
+
 rownames(DHD_short_sync_mat) <- DHD_site_names
 colnames(DHD_short_sync_mat) <- DHD_site_names
 
@@ -137,8 +153,12 @@ DHD_clust_short_df <- data.frame(
 )
 
 
-DHD_medium_sync_mat <- as.matrix(DHD_clust_medium$adj)
-DHD_site_names <- rownames(DHD_clust_medium$dat)
+#DHD_medium_sync_mat <- as.matrix(DHD_clust_medium$adj)
+#DHD_site_names <- rownames(DHD_clust_medium$dat)
+
+DHD_medium_sync_mat <- as.matrix(DHD_clust_medium) # synmat
+DHD_site_names <- row.names(DHD_clean$cdat) #synmat
+
 rownames(DHD_medium_sync_mat) <- DHD_site_names
 colnames(DHD_medium_sync_mat) <- DHD_site_names
 
@@ -152,8 +172,12 @@ DHD_clust_medium_df <- data.frame(
 )
 
 
-DHD_long_sync_mat <- as.matrix(DHD_clust_long$adj)
-DHD_site_names <- rownames(DHD_clust_long$dat)
+#DHD_long_sync_mat <- as.matrix(DHD_clust_long$adj)
+#DHD_site_names <- rownames(DHD_clust_long$dat)
+
+DHD_long_sync_mat <- as.matrix(DHD_clust_long) # synmat
+DHD_site_names <- row.names(DHD_clean$cdat) #synmat
+
 rownames(DHD_long_sync_mat) <- DHD_site_names
 colnames(DHD_long_sync_mat) <- DHD_site_names
 
@@ -173,8 +197,12 @@ DHD_clust_long_df <- sort_sites(DHD_clust_long_df)
 DHD_mats<-rbind(DHD_clust_long_df,DHD_clust_medium_df,DHD_clust_short_df)
 
 ### alg ####
-alg_short_sync_mat <- as.matrix(alg_clust_short$adj)
-alg_site_names <- rownames(alg_clust_short$dat)
+#alg_short_sync_mat <- as.matrix(alg_clust_short$adj)
+#alg_site_names <- rownames(alg_clust_short$dat)
+
+alg_short_sync_mat <- as.matrix(alg_clust_short) # synmat
+alg_site_names <- row.names(alg_clean$cdat) #synmat
+
 rownames(alg_short_sync_mat) <- alg_site_names
 colnames(alg_short_sync_mat) <- alg_site_names
 
@@ -188,8 +216,12 @@ alg_clust_short_df <- data.frame(
 )
 
 
-alg_medium_sync_mat <- as.matrix(alg_clust_medium$adj)
-alg_site_names <- rownames(alg_clust_medium$dat)
+#alg_medium_sync_mat <- as.matrix(alg_clust_medium$adj)
+#alg_site_names <- rownames(alg_clust_medium$dat)
+
+alg_medium_sync_mat <- as.matrix(alg_clust_medium) # synmat
+alg_site_names <- row.names(alg_clean$cdat) #synmat
+
 rownames(alg_medium_sync_mat) <- alg_site_names
 colnames(alg_medium_sync_mat) <- alg_site_names
 
@@ -203,8 +235,12 @@ alg_clust_medium_df <- data.frame(
 )
 
 
-alg_long_sync_mat <- as.matrix(alg_clust_long$adj)
-alg_site_names <- rownames(alg_clust_long$dat)
+#alg_long_sync_mat <- as.matrix(alg_clust_long$adj)
+#alg_site_names <- rownames(alg_clust_long$dat)
+
+alg_long_sync_mat <- as.matrix(alg_clust_long) # synmat
+alg_site_names <- row.names(alg_clean$cdat) #synmat
+
 rownames(alg_long_sync_mat) <- alg_site_names
 colnames(alg_long_sync_mat) <- alg_site_names
 
@@ -230,8 +266,13 @@ predictor_sync_mats<-merge(DTR_mats,DHD_mats) %>% merge(alg_mats)
 
 # Coral data ####
 ### POC ####
-poc_short_sync_mat <- as.matrix(poc_all_clust_short$adj)
-poc_site_names <- rownames(poc_all_clust_short$dat)
+#poc_short_sync_mat <- as.matrix(poc_all_clust_short$adj)
+#poc_site_names <- rownames(poc_all_clust_short$dat)
+
+poc_short_sync_mat <- as.matrix(poc_all_clust_short) # synmat
+poc_site_names <- row.names(poc_cleaned$cdat) #synmat
+
+
 rownames(poc_short_sync_mat) <- poc_site_names
 colnames(poc_short_sync_mat) <- poc_site_names
 
@@ -245,8 +286,12 @@ POC_clust_short_df <- data.frame(
 )
 
 
-poc_medium_sync_mat <- as.matrix(poc_all_clust_medium$adj)
-poc_site_names <- rownames(poc_all_clust_medium$dat)
+#poc_medium_sync_mat <- as.matrix(poc_all_clust_medium$adj)
+#poc_site_names <- rownames(poc_all_clust_medium$dat)
+
+poc_medium_sync_mat <- as.matrix(poc_all_clust_medium) # synmat
+poc_site_names <- row.names(poc_cleaned$cdat) #synmat
+
 rownames(poc_medium_sync_mat) <- poc_site_names
 colnames(poc_medium_sync_mat) <- poc_site_names
 
@@ -260,8 +305,12 @@ POC_clust_medium_df <- data.frame(
 )
 
 
-poc_long_sync_mat <- as.matrix(poc_all_clust_long$adj)
-poc_site_names <- rownames(poc_all_clust_long$dat)
+#poc_long_sync_mat <- as.matrix(poc_all_clust_long$adj)
+#poc_site_names <- rownames(poc_all_clust_long$dat)
+
+poc_long_sync_mat <- as.matrix(poc_all_clust_long) # synmat
+poc_site_names <- row.names(poc_cleaned$cdat) #synmat
+
 rownames(poc_long_sync_mat) <- poc_site_names
 colnames(poc_long_sync_mat) <- poc_site_names
 
@@ -297,6 +346,7 @@ POC_sync_rand_MLR <- lmer(POC_sync ~ (alg_sync + DTR_sync + DHD_sync) * timescal
 summary(poc_sync_MLR)
 summary(POC_sync_rand_MLR)
 anova(poc_sync_MLR)
+anova(POC_sync_rand_MLR)
 
 poc_sync_tidy <- broom::tidy(poc_sync_MLR, conf.int = TRUE)
 poc_sync_tidy
@@ -389,8 +439,12 @@ poc_MLR_plot<-ggplot(poc_MLR_slopes_all, aes(x = estimate, y = timescale_written
 
 
 ### POR ####
-por_short_sync_mat <- as.matrix(por_all_clust_short$adj)
-por_site_names <- rownames(por_all_clust_short$dat)
+#por_short_sync_mat <- as.matrix(por_all_clust_short$adj)
+#por_site_names <- rownames(por_all_clust_short$dat)
+
+por_short_sync_mat <- as.matrix(por_all_clust_short) # synmat
+por_site_names <- row.names(por_cleaned$cdat) #synmat
+
 rownames(por_short_sync_mat) <- por_site_names
 colnames(por_short_sync_mat) <- por_site_names
 
@@ -404,8 +458,12 @@ POR_clust_short_df <- data.frame(
 )
 
 
-por_medium_sync_mat <- as.matrix(por_all_clust_medium$adj)
-por_site_names <- rownames(por_all_clust_medium$dat)
+#por_medium_sync_mat <- as.matrix(por_all_clust_medium$adj)
+#por_site_names <- rownames(por_all_clust_medium$dat)
+
+por_medium_sync_mat <- as.matrix(por_all_clust_medium) # synmat
+por_site_names <- row.names(por_cleaned$cdat) #synmat
+
 rownames(por_medium_sync_mat) <- por_site_names
 colnames(por_medium_sync_mat) <- por_site_names
 
@@ -419,8 +477,12 @@ POR_clust_medium_df <- data.frame(
 )
 
 
-por_long_sync_mat <- as.matrix(por_all_clust_long$adj)
-por_site_names <- rownames(por_all_clust_long$dat)
+#por_long_sync_mat <- as.matrix(por_all_clust_long$adj)
+#por_site_names <- rownames(por_all_clust_long$dat)
+
+por_long_sync_mat <- as.matrix(por_all_clust_long) # synmat
+por_site_names <- row.names(por_cleaned$cdat) #synmat
+
 rownames(por_long_sync_mat) <- por_site_names
 colnames(por_long_sync_mat) <- por_site_names
 
@@ -568,8 +630,12 @@ por_MLR_plot<-ggplot(POR_MLR_slopes_all, aes(x = estimate, y = timescale_written
 
 
 ### MONT ####
-mont_short_sync_mat <- as.matrix(mont_all_clust_short$adj)
-mont_site_names <- rownames(mont_all_clust_short$dat)
+#mont_short_sync_mat <- as.matrix(mont_all_clust_short$adj)
+#mont_site_names <- rownames(mont_all_clust_short$dat)
+
+mont_short_sync_mat <- as.matrix(mont_all_clust_short) # synmat
+mont_site_names <- row.names(mont_cleaned$cdat) #synmat
+
 rownames(mont_short_sync_mat) <- mont_site_names
 colnames(mont_short_sync_mat) <- mont_site_names
 
@@ -583,8 +649,12 @@ MONT_clust_short_df <- data.frame(
 )
 
 
-mont_medium_sync_mat <- as.matrix(mont_all_clust_medium$adj)
-mont_site_names <- rownames(mont_all_clust_medium$dat)
+#mont_medium_sync_mat <- as.matrix(mont_all_clust_medium$adj)
+#mont_site_names <- rownames(mont_all_clust_medium$dat)
+
+mont_medium_sync_mat <- as.matrix(mont_all_clust_medium) # synmat
+mont_site_names <- row.names(mont_cleaned$cdat) #synmat
+
 rownames(mont_medium_sync_mat) <- mont_site_names
 colnames(mont_medium_sync_mat) <- mont_site_names
 
@@ -598,8 +668,12 @@ MONT_clust_medium_df <- data.frame(
 )
 
 
-mont_long_sync_mat <- as.matrix(mont_all_clust_long$adj)
-mont_site_names <- rownames(mont_all_clust_long$dat)
+#mont_long_sync_mat <- as.matrix(mont_all_clust_long$adj)
+#mont_site_names <- rownames(mont_all_clust_long$dat)
+
+mont_long_sync_mat <- as.matrix(mont_all_clust_long) # synmat
+mont_site_names <- row.names(mont_cleaned$cdat) #synmat
+
 rownames(mont_long_sync_mat) <- mont_site_names
 colnames(mont_long_sync_mat) <- mont_site_names
 
@@ -726,8 +800,12 @@ mont_MLR_plot<-ggplot(MONT_MLR_slopes_all, aes(x = estimate, y = timescale_writt
 
 
 ### ACRO ####
-acro_short_sync_mat <- as.matrix(acro_all_clust_short$adj)
-acro_site_names <- rownames(acro_all_clust_short$dat)
+#acro_short_sync_mat <- as.matrix(acro_all_clust_short$adj)
+#acro_site_names <- rownames(acro_all_clust_short$dat)
+
+acro_short_sync_mat <- as.matrix(acro_all_clust_short) # synmat
+acro_site_names <- row.names(acro_df_short_clean$cdat) #synmat
+
 rownames(acro_short_sync_mat) <- acro_site_names
 colnames(acro_short_sync_mat) <- acro_site_names
 
@@ -741,8 +819,12 @@ ACRO_clust_short_df <- data.frame(
 )
 
 
-acro_medium_sync_mat <- as.matrix(acro_all_clust_medium$adj)
-acro_site_names <- rownames(acro_all_clust_medium$dat)
+#acro_medium_sync_mat <- as.matrix(acro_all_clust_medium$adj)
+#acro_site_names <- rownames(acro_all_clust_medium$dat)
+
+acro_medium_sync_mat <- as.matrix(acro_all_clust_medium) # synmat
+acro_site_names <- row.names(acro_df_short_clean$cdat) #synmat
+
 rownames(acro_medium_sync_mat) <- acro_site_names
 colnames(acro_medium_sync_mat) <- acro_site_names
 
@@ -756,8 +838,12 @@ ACRO_clust_medium_df <- data.frame(
 )
 
 
-acro_long_sync_mat <- as.matrix(acro_all_clust_long$adj)
-acro_site_names <- rownames(acro_all_clust_long$dat)
+#acro_long_sync_mat <- as.matrix(acro_all_clust_long$adj)
+#acro_site_names <- rownames(acro_all_clust_long$dat)
+
+acro_long_sync_mat <- as.matrix(acro_all_clust_long) # synmat
+acro_site_names <- row.names(acro_df_short_clean$cdat) #synmat
+
 rownames(acro_long_sync_mat) <- acro_site_names
 colnames(acro_long_sync_mat) <- acro_site_names
 
