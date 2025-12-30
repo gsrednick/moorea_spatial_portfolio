@@ -23,11 +23,11 @@ Scripts: contains scripts for:
 - 'therm_estimator_pub.R --> Curation of [MCR LTER Benthic Temperature data](https://doi.org/10.6073/pasta/02e0fa99c6fca29a1bdd26c46013f0f7). This interpolates missing values and provides tests for interpolation performance. Also estimates Degree Heating Days (DHD) and Diurnal Temperature Range (DTR) for use in '3_wavelet_analyses.R'.
 
 
-Data: contains spatial data. Access raw data via the databases above.
+Data: Location of exported data for products of scripts above. Access raw data via the databases above.
 
 Tables: output from modeling and summaries.
 
-Figures: figure outputs
+Figures: figure outputs.
 
 
 
