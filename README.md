@@ -1,4 +1,6 @@
-# Code in support of Spatial portfolios in coral metapopulations are shaped by spatiotemporal asynchrony in environmental conditions
+# Code in support of manuscript
+
+title: *Spatial portfolios in coral metapopulations are shaped by spatiotemporal asynchrony in environmental conditions*
 
 Authors: Griffin Srednick, Kristen Davis, Peter Edmunds
 
