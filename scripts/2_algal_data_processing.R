@@ -11,10 +11,9 @@ algal_data<-read.csv('./data/MCR_LTER_Annual_Survey_Benthic_Cover_20241219.csv')
 algal_data_wide <- algal_data %>%
   pivot_wider(names_from = Taxonomy_Substrate_Functional_Group, values_from = Percent_Cover, values_fill = 0) %>%
   filter(!`No data` == -1) %>%
-  mutate(algal_cover = rowSums(across(!c(Year:Quadrat, Coral, Sand, Sponge, `Soft Coral`, `Coral Rubble`, `Bare Space`,`No data`), ~ ., .names = "selected_columns"), na.rm = TRUE)) %>%
+  mutate(algal_cover = rowSums(across(!c(Year:Quadrat, Coral, Sand, Sponge, `Soft Coral`, `Coral Rubble`, `Bare Space`,`No data`),  # remove groups that arent of interest
+                                      ~ ., .names = "selected_columns"), na.rm = TRUE)) %>%
   mutate(Habitat = ifelse(Habitat == "Fringing", "Fringe", Habitat))
-
-algal_data %>% filter(Taxonomy_Substrate_Functional_Group == "No data")
 
 
 alg_data_ready<-algal_data_wide %>% filter(algal_cover <= 100) # There are three rows (quadrats) where the totals are greater than 100.
@@ -32,12 +31,6 @@ algal_data_summarized<-alg_data_ready %>%
                              Habitat == "Outer 17" ~ "17m",
                              TRUE ~ Habitat)) %>%
   ungroup()
-
-ggplot(algal_data_summarized,aes(x = Year, y= mean_cover, color = Habitat)) +
-  geom_point() +
-  geom_line() +
-  facet_grid(Habitat~Site) +
-  theme_bw()
 
 # Export for use in wavelet analyses
 write.csv(algal_data_summarized,

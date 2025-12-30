@@ -26,7 +26,6 @@ poc_wmf_plotdat_df %>%
 # 2-10
 poc_wmf_short_plotdat_df %>%
   filter(Timescale >= 2 & Timescale <= 10) %>%
-  #filter(Time < 2019) %>%
   dplyr::summarize(mean_mag = mean(Magnitude,na.rm = T)) %>%
   mutate(perc_sync = mean_mag/max_poc_sync*100)
 
@@ -43,7 +42,6 @@ por_wmf_plotdat_df %>%
 
 
 por_wmf_plotdat_df %>%
-  #filter(Timescale >= 2 & Timescale <= 5) %>%
   filter(Time > 2010) %>%
   dplyr::summarize(mean_mag = mean(Magnitude,na.rm = T)) %>%
   mutate(perc_sync = mean_mag/max_por_sync*100)
@@ -153,7 +151,6 @@ poc_main_ts<-MCR_cover_time_corespp %>%
   geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0) +
   facet_grid(species ~ Site) +
   theme_bw() +
-  #scale_color_manual(values = coral_colors) +  # Apply the manually selected colors
   labs(x = "Year", y = "Percent cover") +
   theme(legend.position = "top",
         plot.margin = unit(c(0,0,0,0),"cm")) +

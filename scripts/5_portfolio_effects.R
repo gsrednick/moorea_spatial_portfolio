@@ -1,12 +1,11 @@
 # Portfolio effect analyses and plotting
 
-
 # Packages
 library(effectsize)
 library(parameters)
 
 
-# Helper functions
+# Helper functions ####
 cv <- function(x){
   sd(x)/abs(mean(x))
 }
@@ -43,7 +42,7 @@ CV_summary <- function(site1, site2, genus,df) {
 
 
 
-# Model for PE~synchrony
+# Model run for PE~synchrony
 get_pairwise_comparisons <- function(model, hierarchies = c("habitat_pair","site_pair","shore_pair"), timescale_val = NULL) {
 
   map_dfr(hierarchies, function(h) {
@@ -229,7 +228,7 @@ poc_sync_base_lm_plot<-ggplot(poc_sync_base_lm_df, aes(x = x, y = predicted)) +
   labs(x = "Wavelet synchrony", y = "ln(Portfolio effects + 1)") +
   ggtext::geom_richtext(
     aes(x = 1, y = 1.5, label = poc_annotate_label),
-    fill = NA, label.color = NA,  # transparent background
+    fill = NA, label.color = NA,
     hjust = 1, size = 4, lineheight = 1.2
   )
 
@@ -251,7 +250,7 @@ poc_resid_plot<-ggplot(poc_resid_long_complete, aes(x = hierarchy, y = resid_syn
     data = poc_asterisks_df,
     aes(x = hierarchy, y = y, label = "*"),
     color = "red",
-    size = 6,          # adjust size
+    size = 6,
     inherit.aes = FALSE
   )
 
@@ -412,7 +411,7 @@ por_sync_base_lm_plot<-ggplot(por_sync_base_lm_df, aes(x = x, y = predicted)) +
   labs(x = "Wavelet synchrony", y = "ln(Portfolio effects + 1)") +
   ggtext::geom_richtext(
     aes(x = 1, y = 1.6, label = por_annotate_label),
-    fill = NA, label.color = NA,  # transparent background
+    fill = NA, label.color = NA,
     hjust = 1, size = 4, lineheight = 1.2
   )
 
@@ -435,7 +434,7 @@ por_resid_plot<-ggplot(por_resid_long_complete, aes(x = hierarchy, y = resid_syn
     data = por_asterisks_df,
     aes(x = hierarchy, y = y, label = "*"),
     color = "red",
-    size = 6,          # adjust size
+    size = 6,
     inherit.aes = FALSE
   )
 
@@ -599,7 +598,7 @@ mont_sync_base_lm_plot<-ggplot(mont_sync_base_lm_df, aes(x = x, y = predicted)) 
   labs(x = "Wavelet synchrony", y = "ln(Portfolio effects + 1)") +
   ggtext::geom_richtext(
     aes(x = 1, y = 1.6, label = mont_annotate_label),
-    fill = NA, label.color = NA,  # transparent background
+    fill = NA, label.color = NA,
     hjust = 1, size = 4, lineheight = 1.2
   )
 mont_resid_plot<-ggplot(mont_resid_long_complete, aes(x = hierarchy, y = resid_sync_only, color = level)) +
@@ -620,7 +619,7 @@ mont_resid_plot<-ggplot(mont_resid_long_complete, aes(x = hierarchy, y = resid_s
     data = mont_asterisks_df,
     aes(x = hierarchy, y = y, label = "*"),
     color = "red",
-    size = 6,          # adjust size
+    size = 6,
     inherit.aes = FALSE
   )
 
@@ -782,7 +781,7 @@ acro_sync_base_lm_plot<-ggplot(acro_sync_base_lm_df, aes(x = x, y = predicted)) 
   labs(x = "Wavelet synchrony", y = "ln(Portfolio effects + 1)") +
   ggtext::geom_richtext(
     aes(x = 1, y = 1.25, label = acro_annotate_label),
-    fill = NA, label.color = NA,  # transparent background
+    fill = NA, label.color = NA,
     hjust = 1, size = 4, lineheight = 1.2
   )
 
@@ -804,7 +803,7 @@ acro_resid_plot<-ggplot(acro_resid_long_complete, aes(x = hierarchy, y = resid_s
     data = acro_asterisks_df,
     aes(x = hierarchy, y = y, label = "*"),
     color = "red",
-    size = 6,          # adjust size
+    size = 6,
     inherit.aes = FALSE
   )
 
@@ -1156,8 +1155,6 @@ alg_predict_plot <- ggplot(alg_pred_data, aes(x = x, y = predicted, color = grou
   theme_bw() +
   labs(x = "Spatial hierarchy", y = "Pairwise wavelet synchrony") +
   theme(plot.title = element_blank(),
-        #strip.background.x = element_blank(),
-        #strip.text.x = element_blank(),
         legend.title = element_blank(),
         legend.background = element_blank(),
         legend.position = c(0.78, 0.95)) +

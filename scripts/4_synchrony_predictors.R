@@ -62,9 +62,6 @@ alg_clust_long<-synmat(alg_clean$cdat,env_years,
 
 ## Flatten ####
 ### DTR ####
-#DTR_short_sync_mat <- as.matrix(DTR_clust_short$adj)
-#DTR_site_names <- rownames(DTR_clust_short$dat)
-
 DTR_short_sync_mat <- as.matrix(DTR_clust_short) # synmat
 DTR_site_names <- row.names(dtr_clean$cdat) #synmat
 
@@ -81,9 +78,6 @@ DTR_clust_short_df <- data.frame(
 )
 
 
-#DTR_medium_sync_mat <- as.matrix(DTR_clust_medium$adj)
-#DTR_site_names <- rownames(DTR_clust_medium$dat)
-
 DTR_medium_sync_mat <- as.matrix(DTR_clust_medium) # synmat
 DTR_site_names <- row.names(dtr_clean$cdat) #synmat
 
@@ -99,9 +93,6 @@ DTR_clust_medium_df <- data.frame(
   timescale = "medium"
 )
 
-
-#DTR_long_sync_mat <- as.matrix(DTR_clust_long$adj)
-#DTR_site_names <- rownames(DTR_clust_long$dat)
 
 DTR_long_sync_mat <- as.matrix(DTR_clust_long) # synmat
 DTR_site_names <- row.names(dtr_clean$cdat) #synmat
@@ -134,9 +125,6 @@ DTR_clust_long_df <- sort_sites(DTR_clust_long_df)
 DTR_mats<-rbind(DTR_clust_long_df,DTR_clust_medium_df,DTR_clust_short_df)
 
 ### DHD ####
-#DHD_short_sync_mat <- as.matrix(DHD_clust_short$adj)
-#DHD_site_names <- rownames(DHD_clust_short$dat)
-
 DHD_short_sync_mat <- as.matrix(DHD_clust_short) # synmat
 DHD_site_names <- row.names(DHD_clean$cdat) #synmat
 
@@ -153,9 +141,6 @@ DHD_clust_short_df <- data.frame(
 )
 
 
-#DHD_medium_sync_mat <- as.matrix(DHD_clust_medium$adj)
-#DHD_site_names <- rownames(DHD_clust_medium$dat)
-
 DHD_medium_sync_mat <- as.matrix(DHD_clust_medium) # synmat
 DHD_site_names <- row.names(DHD_clean$cdat) #synmat
 
@@ -171,9 +156,6 @@ DHD_clust_medium_df <- data.frame(
   timescale = "medium"
 )
 
-
-#DHD_long_sync_mat <- as.matrix(DHD_clust_long$adj)
-#DHD_site_names <- rownames(DHD_clust_long$dat)
 
 DHD_long_sync_mat <- as.matrix(DHD_clust_long) # synmat
 DHD_site_names <- row.names(DHD_clean$cdat) #synmat
@@ -197,9 +179,6 @@ DHD_clust_long_df <- sort_sites(DHD_clust_long_df)
 DHD_mats<-rbind(DHD_clust_long_df,DHD_clust_medium_df,DHD_clust_short_df)
 
 ### alg ####
-#alg_short_sync_mat <- as.matrix(alg_clust_short$adj)
-#alg_site_names <- rownames(alg_clust_short$dat)
-
 alg_short_sync_mat <- as.matrix(alg_clust_short) # synmat
 alg_site_names <- row.names(alg_clean$cdat) #synmat
 
@@ -216,9 +195,6 @@ alg_clust_short_df <- data.frame(
 )
 
 
-#alg_medium_sync_mat <- as.matrix(alg_clust_medium$adj)
-#alg_site_names <- rownames(alg_clust_medium$dat)
-
 alg_medium_sync_mat <- as.matrix(alg_clust_medium) # synmat
 alg_site_names <- row.names(alg_clean$cdat) #synmat
 
@@ -234,9 +210,6 @@ alg_clust_medium_df <- data.frame(
   timescale = "medium"
 )
 
-
-#alg_long_sync_mat <- as.matrix(alg_clust_long$adj)
-#alg_site_names <- rownames(alg_clust_long$dat)
 
 alg_long_sync_mat <- as.matrix(alg_clust_long) # synmat
 alg_site_names <- row.names(alg_clean$cdat) #synmat
@@ -266,9 +239,6 @@ predictor_sync_mats<-merge(DTR_mats,DHD_mats) %>% merge(alg_mats)
 
 # Coral data ####
 ### POC ####
-#poc_short_sync_mat <- as.matrix(poc_all_clust_short$adj)
-#poc_site_names <- rownames(poc_all_clust_short$dat)
-
 poc_short_sync_mat <- as.matrix(poc_all_clust_short) # synmat
 poc_site_names <- row.names(poc_cleaned$cdat) #synmat
 
@@ -286,9 +256,6 @@ POC_clust_short_df <- data.frame(
 )
 
 
-#poc_medium_sync_mat <- as.matrix(poc_all_clust_medium$adj)
-#poc_site_names <- rownames(poc_all_clust_medium$dat)
-
 poc_medium_sync_mat <- as.matrix(poc_all_clust_medium) # synmat
 poc_site_names <- row.names(poc_cleaned$cdat) #synmat
 
@@ -304,9 +271,6 @@ POC_clust_medium_df <- data.frame(
   timescale = "medium"
 )
 
-
-#poc_long_sync_mat <- as.matrix(poc_all_clust_long$adj)
-#poc_site_names <- rownames(poc_all_clust_long$dat)
 
 poc_long_sync_mat <- as.matrix(poc_all_clust_long) # synmat
 poc_site_names <- row.names(poc_cleaned$cdat) #synmat
@@ -357,7 +321,7 @@ get_trends <- function(model, var, label) {
 
   sm %>%
     transmute(timescale,
-              estimate = !!sym(paste0(var, ".trend")),  # <— this is the fix
+              estimate = !!sym(paste0(var, ".trend")),
               std.error = SE,
               conf.low = lower.CL,
               conf.high = upper.CL,
@@ -430,8 +394,8 @@ poc_MLR_plot<-ggplot(poc_MLR_slopes_all, aes(x = estimate, y = timescale_written
   theme(plot.title = element_markdown()) +
   coord_cartesian(xlim = c(-0.4,0.7)) +
   annotate("text",
-           x = -0.38,         # left edge of plot
-           y = 3.3,           # above "long" row
+           x = -0.38,
+           y = 3.3,
            label = poc_r2_lab,
            parse = T,
            hjust = 0,
@@ -439,9 +403,6 @@ poc_MLR_plot<-ggplot(poc_MLR_slopes_all, aes(x = estimate, y = timescale_written
 
 
 ### POR ####
-#por_short_sync_mat <- as.matrix(por_all_clust_short$adj)
-#por_site_names <- rownames(por_all_clust_short$dat)
-
 por_short_sync_mat <- as.matrix(por_all_clust_short) # synmat
 por_site_names <- row.names(por_cleaned$cdat) #synmat
 
@@ -458,9 +419,6 @@ POR_clust_short_df <- data.frame(
 )
 
 
-#por_medium_sync_mat <- as.matrix(por_all_clust_medium$adj)
-#por_site_names <- rownames(por_all_clust_medium$dat)
-
 por_medium_sync_mat <- as.matrix(por_all_clust_medium) # synmat
 por_site_names <- row.names(por_cleaned$cdat) #synmat
 
@@ -476,9 +434,6 @@ POR_clust_medium_df <- data.frame(
   timescale = "medium"
 )
 
-
-#por_long_sync_mat <- as.matrix(por_all_clust_long$adj)
-#por_site_names <- rownames(por_all_clust_long$dat)
 
 por_long_sync_mat <- as.matrix(por_all_clust_long) # synmat
 por_site_names <- row.names(por_cleaned$cdat) #synmat
@@ -526,7 +481,7 @@ coefs <- coef(POR_sync_MLR)
 POR_sync_effects <- POR_sync_tidy %>%
   filter(term != "(Intercept)") %>%
   mutate(
-    # Identify interaction terms
+    # interaction terms
     effect = if_else(str_detect(term, "timescalemedium"), "medium",
                      if_else(str_detect(term, "timescaleshort"),"short", "long")),
 
@@ -550,7 +505,7 @@ get_trends <- function(model, var, label) {
 
   sm %>%
     transmute(timescale,
-              estimate = !!sym(paste0(var, ".trend")),  # <— this is the fix
+              estimate = !!sym(paste0(var, ".trend")),
               std.error = SE,
               conf.low = lower.CL,
               conf.high = upper.CL,
@@ -621,8 +576,8 @@ por_MLR_plot<-ggplot(POR_MLR_slopes_all, aes(x = estimate, y = timescale_written
   theme(plot.title = element_markdown()) +
   coord_cartesian(xlim = c(-0.4,0.7)) +
   annotate("text",
-           x = -0.38,         # left edge of plot
-           y = 3.3,           # above "long" row
+           x = -0.38,
+           y = 3.3,
            label = por_r2_lab,
            parse = T,
            hjust = 0,
@@ -630,9 +585,6 @@ por_MLR_plot<-ggplot(POR_MLR_slopes_all, aes(x = estimate, y = timescale_written
 
 
 ### MONT ####
-#mont_short_sync_mat <- as.matrix(mont_all_clust_short$adj)
-#mont_site_names <- rownames(mont_all_clust_short$dat)
-
 mont_short_sync_mat <- as.matrix(mont_all_clust_short) # synmat
 mont_site_names <- row.names(mont_cleaned$cdat) #synmat
 
@@ -647,10 +599,6 @@ MONT_clust_short_df <- data.frame(
   MONT_sync = mont_short_sync_mat[lower.tri(mont_short_sync_mat)],
   timescale = "short"
 )
-
-
-#mont_medium_sync_mat <- as.matrix(mont_all_clust_medium$adj)
-#mont_site_names <- rownames(mont_all_clust_medium$dat)
 
 mont_medium_sync_mat <- as.matrix(mont_all_clust_medium) # synmat
 mont_site_names <- row.names(mont_cleaned$cdat) #synmat
@@ -667,9 +615,6 @@ MONT_clust_medium_df <- data.frame(
   timescale = "medium"
 )
 
-
-#mont_long_sync_mat <- as.matrix(mont_all_clust_long$adj)
-#mont_site_names <- rownames(mont_all_clust_long$dat)
 
 mont_long_sync_mat <- as.matrix(mont_all_clust_long) # synmat
 mont_site_names <- row.names(mont_cleaned$cdat) #synmat
@@ -717,7 +662,7 @@ get_trends <- function(model, var, label) {
 
   sm %>%
     transmute(timescale,
-              estimate = !!sym(paste0(var, ".trend")),  # <— this is the fix
+              estimate = !!sym(paste0(var, ".trend")),
               std.error = SE,
               conf.low = lower.CL,
               conf.high = upper.CL,
@@ -791,8 +736,8 @@ mont_MLR_plot<-ggplot(MONT_MLR_slopes_all, aes(x = estimate, y = timescale_writt
   theme(plot.title = element_markdown()) +
   coord_cartesian(xlim = c(-0.4,0.7)) +
   annotate("text",
-           x = -0.38,         # left edge of plot
-           y = 3.3,           # above "long" row
+           x = -0.38,
+           y = 3.3,
            label = mont_r2_lab,
            hjust = 0,
            parse = T,
@@ -800,9 +745,6 @@ mont_MLR_plot<-ggplot(MONT_MLR_slopes_all, aes(x = estimate, y = timescale_writt
 
 
 ### ACRO ####
-#acro_short_sync_mat <- as.matrix(acro_all_clust_short$adj)
-#acro_site_names <- rownames(acro_all_clust_short$dat)
-
 acro_short_sync_mat <- as.matrix(acro_all_clust_short) # synmat
 acro_site_names <- row.names(acro_df_short_clean$cdat) #synmat
 
@@ -819,9 +761,6 @@ ACRO_clust_short_df <- data.frame(
 )
 
 
-#acro_medium_sync_mat <- as.matrix(acro_all_clust_medium$adj)
-#acro_site_names <- rownames(acro_all_clust_medium$dat)
-
 acro_medium_sync_mat <- as.matrix(acro_all_clust_medium) # synmat
 acro_site_names <- row.names(acro_df_short_clean$cdat) #synmat
 
@@ -836,10 +775,6 @@ ACRO_clust_medium_df <- data.frame(
   ACRO_sync = acro_medium_sync_mat[lower.tri(acro_medium_sync_mat)],
   timescale = "medium"
 )
-
-
-#acro_long_sync_mat <- as.matrix(acro_all_clust_long$adj)
-#acro_site_names <- rownames(acro_all_clust_long$dat)
 
 acro_long_sync_mat <- as.matrix(acro_all_clust_long) # synmat
 acro_site_names <- row.names(acro_df_short_clean$cdat) #synmat
@@ -892,7 +827,7 @@ get_trends <- function(model, var, label) {
 
   sm %>%
     transmute(timescale,
-              estimate = !!sym(paste0(var, ".trend")),  # <— this is the fix
+              estimate = !!sym(paste0(var, ".trend")),
               std.error = SE,
               conf.low = lower.CL,
               conf.high = upper.CL,
@@ -968,8 +903,8 @@ acro_MLR_plot<-ggplot(ACRO_MLR_slopes_all, aes(x = estimate, y = timescale_writt
   coord_cartesian(xlim = c(-0.4,0.7)) +
   theme(plot.title = element_markdown()) +
   annotate("text",
-           x = -0.38,         # left edge of plot
-           y = 3.3,           # above "long" row
+           x = -0.38,
+           y = 3.3,
            label = acro_r2_lab,
            parse = T,
            hjust = 0,

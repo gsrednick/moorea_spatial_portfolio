@@ -12,9 +12,9 @@ library(ggpmisc)
 library(data.table)
 library(stringr)
 
-# Estimate measures of temperature for analyses
-# DTR - diurnal temperature range --> indicator for 'conditioning'
-# DHD - degree heating days --> indicator for thermal stress 'risk'
+# Derived temperature predictor variables for analyses
+# DTR - diurnal/daily temperature range
+# DHD - degree heating days
 
 # Data attributes
 # Fringe data are 8-minute intervals 2005-present
@@ -22,7 +22,7 @@ library(stringr)
 
 
 # Bring in data
-temp_path <- "./data/environmental/temperature/MAIN"
+temp_path <- "./data/environmental/temperature/MAIN" # download all csv files (n = 12 different csvs) from knb-lter-mcr.1035 to this folder, except for LTER00. See below.
 temp_files <- list.files(path = temp_path, pattern = "\\.csv$", full.names = TRUE)
 temp_files
 
@@ -35,7 +35,8 @@ for (file in temp_files) {
 }
 
 
-LTER00_data<-read.csv('./data/environmental/temperature/LTER00/MCR_LTER00_BTM_Backreef_Forereef_20250521.csv')
+# Upload LTER00 temperature data here
+LTER00_data<-read.csv('./data/environmental/temperature/LTER00/MCR_LTER00_BTM_Backreef_Forereef_20250521.csv') # for
 
 unique(combined_temp$reef_type_code)
 
@@ -335,8 +336,8 @@ temporal_gaps <- combined_temp_upd_mhw_ready_seq %>%
   arrange(time_local) %>%
   mutate(
     time_diff = as.numeric(difftime(time_local, lag(time_local), units = "secs")),
-    start_gap = lag(time_local),  # Start of the gap is the previous timestamp
-    end_gap = time_local          # End of the gap is the current timestamp
+    start_gap = lag(time_local),
+    end_gap = time_local
   ) %>%
   filter(!is.na(start_gap) & time_diff > gap_threshold) %>%
   dplyr::select(Site, Habitat, start_gap, end_gap) %>%
@@ -392,7 +393,7 @@ for (site in sites) {
 
   resid_sd <- sd(pred_df$resid_fringe, na.rm = TRUE)
 
-  # Final prediction with noise injection for missing only
+  # Final prediction with noise for missing only
   pred_df <- pred_df %>%
     mutate(
       predicted_fringe_missing = if_else(
@@ -444,7 +445,7 @@ for (site in sites) {
 
   resid_sd <- sd(pred_df$resid_backreef, na.rm = TRUE)
 
-  # Final prediction with noise injection for missing only
+  # Final prediction with noise for missing only
   pred_df <- pred_df %>%
     mutate(
       predicted_backreef_missing = if_else(
@@ -496,7 +497,7 @@ for (site in sites) {
 
   resid_sd <- sd(pred_df$resid_10m, na.rm = TRUE)
 
-  # Final prediction with noise injection for missing only
+  # Final prediction with noise for missing only
   pred_df <- pred_df %>%
     mutate(
       predicted_10m_missing = if_else(
@@ -547,7 +548,7 @@ for (site in sites) {
 
   resid_sd <- sd(pred_df$resid_17m, na.rm = TRUE)
 
-  # Final prediction with noise injection for missing only
+  # Final prediction with noise for missing only
   pred_df <- pred_df %>%
     mutate(
       predicted_17m_missing = if_else(
@@ -574,21 +575,23 @@ dim(m17_filled_df_long)
 dim(m17_full_merge_filled_data)
 
 
-
+# Make dfs ready for rbind
 fringe_filled_for_merge<-fringe_full_merge_filled_data %>% select(time_local,Site,Habitat,temperature_c,lm_filled_temp)
 backreef_filled_for_merge<-backreef_full_merge_filled_data %>% select(time_local,Site,Habitat,temperature_c,lm_filled_temp)
 m10_filled_for_merge<-m10_full_merge_filled_data %>% select(time_local,Site,Habitat,temperature_c,lm_filled_temp)
 m17_filled_for_merge<-m17_full_merge_filled_data %>% select(time_local,Site,Habitat,temperature_c,lm_filled_temp)
 
-combined_habs_sites_forfill<-rbind(fringe_filled_for_merge,
-      backreef_filled_for_merge,
-      m10_filled_for_merge,
-      m17_filled_for_merge)
+
+# Bind
+combined_habs_sites_forfill<-rbind(
+  fringe_filled_for_merge,
+  backreef_filled_for_merge,
+  m10_filled_for_merge,
+  m17_filled_for_merge)
 
 
 
-# Fill remaining gaps with seasonal averaging procedure
-
+# Fill remaining gaps with seasonal averaging procedure ####
 
 fill_gaps_combined_optimized_2ndfill <- function(df, full_data) {
   # Step 1: Calculate seasonal mean for the site of interest
@@ -642,8 +645,9 @@ prefilled_grouped_data <- combined_habs_sites_forfill %>%
   group_split()
 
 # Fill data in parallel
-gc() # garbage collection to clean the space
+gc() # garbage collection to speed things up
 gc() # again for extra ummmph
+gc() # again for even more ummmph
 
 second_fill_filled_data <- mclapply(
   prefilled_grouped_data,
@@ -655,18 +659,6 @@ second_fill_filled_data <- mclapply(
 
 second_fill_filled_data_adjust<-second_fill_filled_data %>%
   mutate(adjusted_mean = rowMeans(cbind(seasonal_mean, related_real_value), na.rm = TRUE)) # this gives the "filled" value for all cases where NA is present -- i.e., omits NA
-
-# Check for estimates to be parallel
-second_fill_filled_data_adjust %>%
-  ggplot(aes(x = temperature_c_filled, y = temperature_c)) +
-  geom_abline() +
-  geom_point() +
-  stat_poly_eq(use_label(c("eq", "R2"))) +
-  stat_poly_line(color = "blue") +
-  facet_grid(Site~Habitat) +
-  theme_bw() +
-  coord_fixed()
-
 
 
 filled_ts_plot_wgaps_2ndfill<-
@@ -698,14 +690,6 @@ ggsave('./data/environmental/summarized/Figure_S1_temperature_timeseries',
 
 # Export filled data to csv
 write.csv(second_fill_filled_data_adjust,'./data/environmental/summarized/interpolated_temperature_dat_JUN25_2ndfill_upd.csv')
-
-
-second_fill_filled_data_adjust %>%
-  group_by(Habitat,Site,time_local) %>%
-  dplyr::summarize(n = n()) %>%
-  filter(n > 1)
-
-
 
 
 # Check residuals ####
@@ -773,11 +757,6 @@ ggsave('./data/environmental/summarized/Figure_S2_temperature_fits',
        height = 16,
        width = 14
 )
-
-
-
-filled_data_adjust_nacheck<-second_fill_filled_data_adjust %>% filter(is.na(temperature_c))
-
 
 
 

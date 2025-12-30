@@ -120,28 +120,7 @@ knb_1038_lagoon_srednick<-read.csv('./data/summarized/knb-lter-mcr.1038_srednick
 # Join knb-lter-mcr.4 and knb-lter-mcr.1038 raw photos annotated by G. Srednick
 # Filtered for genera of interest: Pocillopora, Porites, Acropora, Montipora
 
-lagoon_forjoin<-knb_1038_lagoon_srednick %>%
-  dplyr::mutate(Habitat = "Backreef",
-         #Quadrat = is.factor(Quadrat)
-         ) %>%
-  dplyr::rename(Date = nom_year,
-         Pocillopora = Pocill,
-         Acropora = Acrop,
-         Montipora = Monti) %>%
-  dplyr::select(Site,Habitat,Date,Poles,Transect,#Quadrat,
-         Pocillopora,Porites_new,Acropora,Montipora) %>%
-  dplyr::group_by(Site,Habitat,Date,Poles,Transect) %>%
-  dplyr::summarize_if(is.numeric,mean,na.rm=T) %>%
-  dplyr::group_by(Site,Habitat,Date,Poles) %>%
-  dplyr::summarize_if(is.numeric,mean,na.rm=T) %>%
-  dplyr::group_by(Site,Habitat,Date) %>%
-  dplyr::summarize_if(is.numeric,mean,na.rm=T)
-
-
-knb_1038_lagoon_srednick %>%
-  group_by(Site,Transect) %>%
-  reframe()
-
+lagoon_forjoin<-knb_1038_lagoon_srednick
 
 other_sites_forjoin<-MCR_ready %>%
   dplyr::select(Site,Habitat,Date,Transect,Quadrat, Pocillopora,Porites_new,Acropora,Montipora) %>%

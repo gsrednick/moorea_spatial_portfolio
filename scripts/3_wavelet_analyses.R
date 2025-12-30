@@ -15,16 +15,16 @@ library(ggtext)
 set.seed(42)
 
 # Helper functions ####
+## extract plotmag helper function ####
 
-# extract plotmag helper function ####
 extract_plotmag_data <- function(wmpf_object, sigthresh = 0.95) {
   library(wsyn)
 
   # Extract magnitude, time, timescales, and significance
   wav <- Mod(get_values(wmpf_object))  # Magnitude
-  times <- get_times(wmpf_object)  # Time (x-axis)
-  timescales <- get_timescales(wmpf_object)  # Timescales (y-axis)
-  signif <- get_signif(wmpf_object)  # Significance object
+  times <- get_times(wmpf_object)  # Time
+  timescales <- get_timescales(wmpf_object)  # Timescales
+  signif <- get_signif(wmpf_object)  # Significance, if relevant
 
   # Create a dataframe for plotting
   plot_data <- expand.grid(Time = times, Timescale = timescales)
@@ -76,8 +76,8 @@ extract_plotmag_wmf_data <- function(wmf_object) {
 
   # Extract magnitude, time, timescales, and significance
   wav <- Mod(get_values(wmf_object))  # Magnitude
-  times <- get_times(wmf_object)  # Time (x-axis)
-  timescales <- get_timescales(wmf_object)  # Timescales (y-axis)
+  times <- get_times(wmf_object)  # Time
+  timescales <- get_timescales(wmf_object)  # Timescales
 
   # Create a dataframe for plotting
   plot_data <- expand.grid(Time = times, Timescale = timescales)
@@ -96,8 +96,8 @@ extract_plotmag_wmf_data <- function(wmf_object, sigthresh = 0.95) {
   wav <- Mod(get_values(wmf_object))  # Magnitude
   real <- Re(get_values(wmf_object))  # Real part
 
-  times <- get_times(wmf_object)  # Time (x-axis)
-  timescales <- get_timescales(wmf_object)  # Timescales (y-axis)
+  times <- get_times(wmf_object)  # Time
+  timescales <- get_timescales(wmf_object)  # Timescales
 
   # Create a dataframe for plotting
   plot_data <- expand.grid(Time = times, Timescale = timescales)
@@ -112,8 +112,7 @@ extract_plotmag_wmf_data <- function(wmf_object, sigthresh = 0.95) {
 
 # AR1 surrogate for generating WMF contours
 generate_ar1_surrogate <- function(ts) {
-  # Fit AR(1) model
-  ar_fit <- tryCatch(ar(ts, aic = FALSE, order.max = 1), error = function(e) NULL)
+  ar_fit <- tryCatch(ar(ts, aic = FALSE, order.max = 1), error = function(e) NULL) # Fit AR(1) model
   if (is.null(ar_fit)) return(rep(NA, length(ts)))
   phi <- ar_fit$ar
   arima.sim(model = list(ar = phi), n = length(ts))
@@ -121,7 +120,6 @@ generate_ar1_surrogate <- function(ts) {
 
 
 # Data import ####
-
 # Coral community structure data for species of interest -- from coral_data_processing.R
 MCR_coral_data<-read.csv('./data/summarized/MCR_CTS_site_updated.csv')
 
@@ -138,7 +136,7 @@ length(coral_years) # 20 years shown here 2005-2024
 years = seq(2006,max(coral_years)) # new, no 2005 data for backreef
 length(years)
 
-env_years<-unique(thermal_conditions$year) # 2005-2007 temperature data are missing for the fringing reef. Probably inappropriate to interpolate these here. Will have to use 2008 onward
+env_years<-unique(thermal_conditions$year)
 length(env_years) # 17 years 2008-2024
 
 env_years = 2008:2024
@@ -171,7 +169,6 @@ DHD_matrix <- thermal_conditions %>%
 
 
 ## Algal data to matrix ####
-
 alg_matrix <- biol_predictors %>%
   dplyr::mutate(Site = str_replace(Site,"_","0")) %>%
   dplyr::mutate(Site_hab = paste0(Site,"_",Habitat)) %>%
@@ -190,7 +187,6 @@ alg_matrix <- biol_predictors %>%
 
 
 ## Clean predictors ####
-
 dtr_clean<-cleandat(DTR_matrix, times = env_years, clev = 4) # removes mean, detrends, standardizes variance, and Box-Cox transforms
 DHD_clean<-cleandat(DHD_matrix, times = env_years, clev = 4) # removes mean, detrends, standardizes variance, and Box-Cox transforms
 alg_clean<-cleandat(alg_matrix, times = env_years, clev = 4) # removes mean, detrends, standardizes variance, and Box-Cox transforms
@@ -250,10 +246,9 @@ poc_detrended<-as.data.frame(poc_df_clean$cdat) %>%
   separate(Site_hab, into = c("Site","Habitat"),sep = "_") %>%
   mutate(Year = as.numeric(Year))
 
-# Plotting means and var for Figure 3 - modifed
+# Plotting means and var for Figure 3
 poc_ts_plot_df<-poc_detrended %>%
   group_by(Year) %>%
-  #filter(Date > 2007 & Date < 2020) %>%
   dplyr::summarise(mean = mean(cover,na.rm = T),
                    var = var(cover, na.rm = T),
                    sd = sd(cover, na.rm = T),
@@ -314,7 +309,7 @@ poc_cdat<-poc_cleaned$cdat
 
 # Loop through permutations
 for (i in 1:nrand) {
-  # Ciruclar rotation of time series - preserve spectral structure within sites
+  # Circular rotation of time series - preserve spectral structure within sites
   surrogates <- t(apply(poc_cdat, 1, generate_ar1_surrogate))
 
   # Re-center - site's time series to zero mean
@@ -546,7 +541,7 @@ por_cdat<-por_cleaned$cdat
 
 # Loop through permutations
 for (i in 1:nrand) {
-  # Ciruclar rotation of time series - preserve spectral structure within sites
+  # Circular rotation of time series - preserve spectral structure within sites
   surrogates <- t(apply(por_cdat, 1, generate_ar1_surrogate))
 
   # Re-center -- site's time series (i.e., columns) to zero mean
@@ -745,7 +740,7 @@ mont_cdat<-mont_cleaned$cdat
 
 # Loop through permutations
 for (i in 1:nrand) {
-  # Ciruclar rotation of time series - preserve spectral structure within sites
+  # Circular rotation of time series - preserve spectral structure within sites
   surrogates <- t(apply(mont_cdat, 1, generate_ar1_surrogate))
 
   # Re-center -- site's time series (i.e., columns) to zero mean
@@ -954,7 +949,7 @@ acro_cdat<-acro_cleaned$cdat
 
 # Loop through permutations
 for (i in 1:nrand) {
-  # Ciruclar rotation of time series - preserve spectral structure within sites
+  # Circular rotation of time series - preserve spectral structure within sites
   surrogates <- t(apply(acro_cdat, 1, generate_ar1_surrogate))
 
   # Re-center -- site's time series (i.e., columns) to zero mean
@@ -1212,7 +1207,6 @@ alg_whole_wmf_plot<-alg_wmf_plotdat_df %>%
   ggplot(aes(x = Time, y = log2(Timescale), fill = Magnitude)) +
   geom_tile() +
   scale_fill_viridis_c(option = "plasma", name = "Coherence") +
-
   scale_y_continuous(
     breaks = log2(alg_wmf_pretty_TS),
     labels = round(alg_wmf_pretty_TS, 2)) +
@@ -1521,13 +1515,11 @@ ggsave("./figures/Figure_S3.png",
 # Timescale testing ####
 short <- c(2,5)
 medium <- c(5,10)
-#long <-c(2,14) # OLD
 long <-c(2,10)
 
 bands <- list(
   short = c(2, 5),
   medium = c(5, 10),
-  #long = c(2, 14) # old
   long = c(2,10)
 
 )
@@ -1535,7 +1527,6 @@ bands <- list(
 
 ## POC Synmats ####
 clustmethod = "ReXWT.sig.fft"
-#clustmethod = "ReXWT.sig.aaft"
 f0_set = 0.5
 
 # short = 2-5y
@@ -1573,7 +1564,6 @@ por_all_clust_long<-synmat(por_df_short_clean$cdat,env_years,
                           f0 = f0_set)
 
 ## MONT Synmats ####
-#clustmethod = "ReXWT.sig.fft"
 mont_all_clust_short<-synmat(mont_df_short_clean$cdat,env_years,
                             method = clustmethod, nsurrogs = 1000,weighted = T,
                             tsrange = short,
@@ -1591,8 +1581,6 @@ mont_all_clust_long<-synmat(mont_df_short_clean$cdat,env_years,
 
 
 # ACRO Synmats ####
-#clustmethod = "ReXWT.sig.fft"
-
 acro_all_clust_short<-synmat(acro_df_short_clean$cdat,env_years,
                             method = clustmethod, nsurrogs = 1000,weighted = T,
                             tsrange = short,
