@@ -2,7 +2,7 @@
 
 Authors: Griffin Srednick, Kristen Davis, Peter Edmunds
 
-Published in: Ecology Letters, XXXX
+In Consideration: Ecology Letters
 
 **Folders:**
 
