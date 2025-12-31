@@ -33,8 +33,6 @@ algal_data_summarized<-alg_data_ready %>%
   ungroup()
 
 # Export for use in wavelet analyses
-write.csv(algal_data_summarized,
-          './data/summarized/MCR_alg_summarized.csv',
-          row.names = F)
+write.csv(algal_data_summarized, './data/summarized/MCR_alg_summarized.csv', row.names = F)
 
 # END #

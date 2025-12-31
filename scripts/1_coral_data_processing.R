@@ -113,17 +113,25 @@ MCR_ready_rep_level <- MCR_ready %>%
 
 
 # Backreef data ####
-knb_1038_lagoon_srednick<-read.csv('./data/summarized/knb-lter-mcr.1038_srednick_manual.csv')
+knb_1038_lagoon_srednick<-read.csv('./data/summarized/knb-lter-mcr.1038_srednick_manual_fullres.csv')
 
 
 # Joining and summarizing ####
 # Join knb-lter-mcr.4 and knb-lter-mcr.1038 raw photos annotated by G. Srednick
 # Filtered for genera of interest: Pocillopora, Porites, Acropora, Montipora
 
-lagoon_forjoin<-knb_1038_lagoon_srednick
+lagoon_forjoin<-knb_1038_lagoon_srednick %>%
+  dplyr::mutate(Habitat = "Backreef") %>%
+  dplyr::select(Site,Habitat,Date,Poles,Transect,Pocillopora,Porites_new,Acropora,Montipora) %>%
+  dplyr::group_by(Site,Habitat,Date,Poles,Transect) %>%
+  dplyr::summarize_if(is.numeric,mean,na.rm=T) %>%
+  dplyr::group_by(Site,Habitat,Date,Poles) %>%
+  dplyr::summarize_if(is.numeric,mean,na.rm=T) %>%
+  dplyr::group_by(Site,Habitat,Date) %>%
+  dplyr::summarize_if(is.numeric,mean,na.rm=T)
 
 other_sites_forjoin<-MCR_ready %>%
-  dplyr::select(Site,Habitat,Date,Transect,Quadrat, Pocillopora,Porites_new,Acropora,Montipora) %>%
+  dplyr::select(Site,Habitat,Date,Transect,Quadrat,Pocillopora,Porites_new,Acropora,Montipora) %>%
   dplyr::group_by(Site,Date,Transect, Habitat) %>%
   dplyr::summarize_all(mean,na.rm =T) %>%
   dplyr::group_by(Site,Date,Habitat) %>%
@@ -139,17 +147,11 @@ write.csv(complete_MCR_coral_data_site,'./data/summarized/MCR_CTS_site_updated.c
 
 # Plotting time series ####
 lagoon_forjoin_rep<-knb_1038_lagoon_srednick %>%
-  dplyr::group_by(Site,nom_year,Poles,Transect) %>%
+  dplyr::group_by(Site,Date,Poles,Transect) %>%
   dplyr::mutate(Quad_id = row_number()) %>%
   dplyr::mutate(Habitat = "Backreef",
-         #Quadrat = as.factor(Quadrat),
          bommie_tran = paste0(Poles,"_",Transect)) %>%
-  dplyr::rename(Date = nom_year,
-                Quadrat = Quad_id,
-                Pocillopora = Pocill,
-                Acropora = Acrop,
-                Montipora = Monti) %>%
-  dplyr::select(Site,Habitat,Date,Poles,bommie_tran,Transect,Quadrat,
+  dplyr::select(Site,Habitat,Date,Poles,bommie_tran,Transect,Quad_id,
                 Pocillopora,Porites_new,Acropora,Montipora) %>%
   dplyr::mutate(Transect = bommie_tran)
 
@@ -201,45 +203,12 @@ MCR_cover_time_corespp$species<-factor(MCR_cover_time_corespp$species, levels = 
 
 coral_colors <- c("Acropora spp." = "#31688e", "Pocillopora spp." = "#f8765c", "Porites spp." = "#982d80","Montipora spp." = "pink", "other corals" = "#5DC963")
 
-# Save products to csv
+# Save products to csv -- plotting in '6_summary_stats.R"
 write.csv(MCR_cover_time_corespp,'./data/summarized/MCR_CTS_replicate_updated.csv',row.names = F)
-
 
 min_reps<-MCR_cover_time_corespp %>%
   group_by(Site,Date,Habitat) %>%
   summarize(min_rep = min(n))
-
-
-
-# Full replication
-complete_MCR_coral_data_full_rep<-complete_MCR_coral_data_full %>%
-  dplyr::rename("Pocillopora spp." = Pocillopora,
-              "Acropora spp." = Acropora,
-              "Porites spp." = Porites_new,
-              "Montipora spp." = Montipora)
-
-write.csv(complete_MCR_coral_data_full_rep,'./data/summarized/MCR_CTS_full_replicate_updated.csv',row.names = F)
-
-
-# obtain reps for lagoon and other habitats separately
-complete_backreef<-complete_MCR_coral_data_full_rep %>%
-  filter(Habitat == "Backreef")
-
-complete_backreef_summarized<-complete_backreef %>%
-  pivot_longer(col = -c(Transect,Quadrat,Date,Habitat,Site,Poles), names_to = "species",values_to = "cover") %>%
-  group_by(Site,Habitat,Date,Poles,species) %>%
-  dplyr::summarize_all(mean,na.rm =T) %>%
-  group_by(Site,Habitat,Date,species) %>%
-  dplyr::summarize(mean = mean(cover,na.rm = T),
-                     se = se_fn(cover),
-                     n = n())
-
-
-MCR_cover_time_summarized_updated<-MCR_cover_time_summarized %>%
-  filter(!Habitat == "Backreef") %>%
-  rbind(complete_backreef_summarized)
-
-write.csv(MCR_cover_time_summarized_updated,'./data/summarized/MCR_CTS_replicate_updated_V2.csv',row.names = F)
 
 
 # END #

@@ -1517,12 +1517,6 @@ short <- c(2,5)
 medium <- c(5,10)
 long <-c(2,10)
 
-bands <- list(
-  short = c(2, 5),
-  medium = c(5, 10),
-  long = c(2,10)
-
-)
 
 
 ## POC Synmats ####

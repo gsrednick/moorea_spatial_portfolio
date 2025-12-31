@@ -1,7 +1,7 @@
 # Synchrony predictors script ####
 
 # Packages
-library(lmer)
+library(lme4)
 library(lmerTest)
 library(ggeffects)
 library(emmeans)
