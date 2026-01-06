@@ -8,7 +8,7 @@ library(reshape2)
 # knb-lter-mcr.4 - Data DOI: https://doi.org/10.6073/pasta/cc668aff4dde756810631da46ff8fff8
 
 # Data import
-MCR_coral<-read.csv('./data/knb-lter-mcr.4_2_20250409.csv')
+MCR_coral<-read.csv('./data/knb-lter-mcr.4_2_20250409.csv') # wide format data
 
 # Data cleaning
 MCR_coral$Location <- as.factor(MCR_coral$Location)
@@ -113,7 +113,7 @@ MCR_ready_rep_level <- MCR_ready %>%
 
 
 # Backreef data ####
-knb_1038_lagoon_srednick<-read.csv('./data/summarized/knb-lter-mcr.1038_srednick_manual_fullres.csv')
+knb_1038_lagoon_srednick<-read.csv('./data/knb-lter-mcr.1038_srednick_manual_fullres.csv')
 
 
 # Joining and summarizing ####
@@ -142,7 +142,7 @@ other_sites_forjoin<-MCR_ready %>%
 complete_MCR_coral_data_site<-rbind(other_sites_forjoin,lagoon_forjoin)
 
 # Export -- for wavelet analyses
-write.csv(complete_MCR_coral_data_site,'./data/summarized/MCR_CTS_site_updated.csv',row.names = F)
+write.csv(complete_MCR_coral_data_site,'./data/MCR_CTS_site_updated.csv',row.names = F)
 
 
 # Plotting time series ####

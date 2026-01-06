@@ -5,7 +5,7 @@
 library(tidyverse)
 
 # Data load - knb-lter-mcr.8 - DOI: https://doi.org/10.6073/pasta/44d263de042710767ed770986fd12f5c
-algal_data<-read.csv('./data/MCR_LTER_Annual_Survey_Benthic_Cover_20241219.csv')
+algal_data<-read.csv('./data/MCR_LTER_Annual_Survey_Benthic_Cover_20251009.csv')
 
 # estimate algal cover
 algal_data_wide <- algal_data %>%

@@ -12,6 +12,11 @@ library(ggpmisc)
 library(data.table)
 library(stringr)
 
+se_fn <- function(x, na.rm = FALSE) {
+  if (na.rm) x <- na.omit(x)
+  sd(x) / sqrt(length(x))
+}
+
 # Derived temperature predictor variables for analyses
 # DTR - diurnal/daily temperature range
 # DHD - degree heating days
@@ -36,7 +41,7 @@ for (file in temp_files) {
 
 
 # Upload LTER00 temperature data here
-LTER00_data<-read.csv('./data/environmental/temperature/LTER00/MCR_LTER00_BTM_Backreef_Forereef_20250521.csv') # for
+LTER00_data<-read.csv('./data/environmental/temperature/LTER00/MCR_LTER00_BTM_Backreef_Forereef_20250522.csv')
 
 unique(combined_temp$reef_type_code)
 
@@ -682,7 +687,7 @@ filled_ts_plot_wgaps_2ndfill<-
   labs(x = "Time (hourly)", y = "Temp (hourly mean C)", title = "Temperature time series: >14d gap shown in grey")
 
 
-ggsave('./data/environmental/summarized/Figure_S1_temperature_timeseries',
+ggsave('./data/environmental/summarized/Figure_S1_temperature_timeseries.jpeg',
        filled_ts_plot_wgaps_2ndfill,
        dpi = 300,
        height = 10,
@@ -751,51 +756,12 @@ filled_data_fits_plot_2nd<-second_fill_filled_data_adjust %>%
   ) +
   coord_fixed(xlim = c(22,33), ylim = c(22,33))
 
-ggsave('./data/environmental/summarized/Figure_S2_temperature_fits',
+ggsave('./data/environmental/summarized/Figure_S2_temperature_fits.jpeg',
        filled_data_fits_plot_2nd,
        dpi = 300,
        height = 16,
        width = 14
 )
-
-
-
-# Check residuals ####
-filled_data_adjust_nona<-second_fill_filled_data_adjust %>% filter(!is.na(temperature_c))
-
-# Look at mean and sd of residuals for each fit
-temp_data_split <- filled_data_adjust_nona %>%
-  group_by(Site, Habitat) %>%
-  group_split()
-
-# Function to run diagnostics for each group
-run_diagnostics <- function(df) {
-  site <- unique(df$Site)
-  habitat <- unique(df$Habitat)
-
-  if (nrow(df) < 5) return(NULL)  # skip if too few rows
-
-  model <- lm(adjusted_mean ~ temperature_c, data = df)
-  sim <- simulateResiduals(model, plot = F)
-
-  tibble(
-    Site = site,
-    Habitat = habitat,
-    SD_resid = sd(sim$scaledResiduals),
-    var_resid = var(sim$scaledResiduals),
-    Mean_resid = mean(sim$scaledResiduals)
-  )
-}
-
-# Run function on all group splits
-temp_interp_summary_df <- map_dfr(temp_data_split, run_diagnostics)
-
-
-temp_interp_summary_df_summarized<-temp_interp_summary_df %>%
-  dplyr::summarize(u_mean_var = mean(var_resid),
-                   se = se_fn(var_resid))
-
-
 
 
 
@@ -819,7 +785,7 @@ mod_DHD <- second_fill_filled_data_adjust %>%
   mutate(
     hspt = temperature_c - mmmt,
     hsptm = ifelse(hspt >= 1, hspt, 0),
-    dhd = dhd_rollify(hsptm) / samples_per_day,  # normalize to °C·days
+    dhd = dhd_rollify(hsptm) / samples_per_day,  # normalize
     year = year(time_hourly)
   )
 
@@ -851,7 +817,7 @@ annual_DTR<-second_fill_filled_data_adjust %>%
 
 # Output data ####
 therm_dat_updated<-merge(annual_DTR,annual_DHD)
-write.csv(therm_dat_updated, './data/environmental/Summarized/thermal_predictors_updated.csv', row.names = F)
+write.csv(therm_dat_updated, './data/environmental/summarized/thermal_predictors_updated.csv', row.names = F)
 
 
 # END ####

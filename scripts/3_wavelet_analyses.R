@@ -124,7 +124,7 @@ generate_ar1_surrogate <- function(ts) {
 MCR_coral_data<-read.csv('./data/summarized/MCR_CTS_site_updated.csv')
 
 # Summarized temperature data (DTR & DHD) -- from therm_estimator.R
-thermal_conditions<-read.csv('./data/thermal_predictors_updated.csv') # this is with DHD estimated within year -- 2008-2024; Wyatt method, but not backwards in time
+thermal_conditions<-read.csv('./data/environmental/summarized/thermal_predictors_updated.csv') # this is with DHD estimated within year -- 2008-2024; Wyatt method, but not backwards in time
 
 # Summarized algal data -- from algal_data_processing.R
 biol_predictors<-read.csv('./data/summarized/MCR_alg_summarized.csv')
