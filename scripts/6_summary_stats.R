@@ -128,7 +128,7 @@ MCR_cover_time_corespp<-read.csv('./data/summarized/MCR_CTS_replicate_updated.cs
 library(png)
 library(grid)
 
-cot <- readPNG("./figures/symbols/cot.png")
+cot <- readPNG("./figures/symbols/cots.png")
 cot_grob <- rasterGrob(cot, interpolate = TRUE)
 
 cyclone <- readPNG("./figures/symbols/cyclone.png")

@@ -3,12 +3,19 @@
 # Packages
 library(tidyverse)
 library(reshape2)
+library(stringr)
 
 # Forereef (10m & 17m) fringe data ####
 # knb-lter-mcr.4 - Data DOI: https://doi.org/10.6073/pasta/cc668aff4dde756810631da46ff8fff8
 
 # Data import
-MCR_coral<-read.csv('./data/knb-lter-mcr.4_2_20250409.csv') # wide format data
+coral_file <- list.files(
+  path = "./data",
+  pattern = "knb-lter-mcr\\.4_2.*\\.csv$", # robust to changes in release
+  full.names = TRUE
+)
+
+MCR_coral<-read.csv(coral_file) # wide format data
 
 # Data cleaning
 MCR_coral$Location <- as.factor(MCR_coral$Location)

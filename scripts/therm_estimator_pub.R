@@ -41,7 +41,13 @@ for (file in temp_files) {
 
 
 # Upload LTER00 temperature data here
-LTER00_data<-read.csv('./data/environmental/temperature/LTER00/MCR_LTER00_BTM_Backreef_Forereef_20250522.csv')
+LTER0_temp_file <- list.files(
+  path = "./data/environmental/temperature/LTER00",
+  pattern = "^MCR_LTER00_BTM_Backreef_Forereef_.*\\.csv$", # robust to changes in release
+  full.names = TRUE
+)
+
+LTER00_data<-read.csv(LTER0_temp_file) # wide format data
 
 unique(combined_temp$reef_type_code)
 
@@ -236,10 +242,7 @@ combined_temp_upd_mhw_ready_actual <- combined_temp_upd_mhw_ready %>%
 # Join and complete
 combined_temp_upd_mhw_ready_seq <- full_seq_lab_df %>%
   left_join(combined_temp_upd_mhw_ready_actual,
-            by = c("Site", "Habitat", "site_hab_depth", "time_local"#, "year", "month", "day", "hour"
-                   ))
-View(combined_temp_upd_mhw_ready_seq)
-
+            by = c("Site", "Habitat", "site_hab_depth", "time_local"))
 
 dim(full_seq_lab_df) # [1] 3913704      13
 dim(combined_temp_upd_mhw_ready_actual) # [1] 3398168      13

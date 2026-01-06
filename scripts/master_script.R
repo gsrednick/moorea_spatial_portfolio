@@ -6,9 +6,13 @@
 ifelse(!dir.exists("./data"),
        dir.create("./data"), "Folder exists already")
 
+# Summarized data directory
+ifelse(!dir.exists("./data/summarized"),
+       dir.create("./data/summarized"), "Folder exists already")
+
 # Directory for main temperature data -- place all temperature data (n = 12 csvs) except for LTER0 in this directory
 ifelse(!dir.exists("./data/environmental/temperature/MAIN"),
-       dir.create("./data/environmental/temperature/MAIN"), "Folder exists already")
+       dir.create("./data/environmental/temperature/MAIN", recursive = T), "Folder exists already")
 
 # Directory for LTER0 temperature data
 ifelse(!dir.exists("./data/environmental/temperature/LTER00"),
