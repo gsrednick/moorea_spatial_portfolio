@@ -36,4 +36,4 @@ Figures: figure outputs.
 
 
 
-**Note**: Some analyses (e.g., wavelet synchrony estimation using surrogate-based clustering via wsyn::synmat()) employ surrogate generation. Although random seeds are set, minor variation in non-significant p-values may occur across runs; all effect sizes, significance patterns, and conclusions are fully reproducible.
+**Note**: Some analyses (e.g., wavelet synchrony estimation using surrogates via wsyn::synmat()) employ surrogate generation. Although random seeds are set, minor variation in non-significant p-values may occur in analyses; all effect sizes, significance patterns, and conclusions are fully reproducible.
