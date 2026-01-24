@@ -4,7 +4,7 @@ Title: **Spatial portfolios in coral metapopulations are shaped by spatiotempora
 
 Authors: **Griffin Srednick, Kristen Davis, Peter Edmunds**
 
-Ecology Letters (*Accepted*)
+Ecology Letters (*In Press.*)
 
 **Folders:**
 
